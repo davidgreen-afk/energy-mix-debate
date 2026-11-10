@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy Mix Debate</title>
+<style>
+:root{--g:#046A38;--gd:#04472A;--y:#F1C400;--paper:#F5F8F2;--line:#D2DDD3;--ink:#2F3A33;--okbg:#E3F2E8;--badbg:#FBE9E6;--bad:#A33A2B;--warnbg:#FFF8D6;
+ --serif:Georgia,'Times New Roman',serif;--sans:Calibri,'Segoe UI',Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:var(--sans);font-size:17px;line-height:1.6;color:var(--ink);background:var(--paper)}
+header{background:var(--g);color:#fff;padding:14px 22px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+header h1{font-family:var(--serif);font-weight:normal;font-size:22px;margin:0}
+header small{display:block;opacity:.85;font-size:14px}
+#stepper{display:flex;gap:6px;max-width:820px;margin:18px auto 0;padding:0 16px}
+#stepper div{flex:1;font-size:13.5px;text-align:center;padding:6px 2px;border-bottom:5px solid var(--line);color:#5b6b60}
+#stepper div.done{border-color:var(--g);color:var(--gd)}#stepper div.cur{border-color:var(--y);color:var(--gd);font-weight:bold}
+main{max-width:820px;margin:0 auto;padding:16px 16px 80px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px 28px;margin-bottom:16px}
+h2{font-family:var(--serif);font-weight:normal;color:var(--gd);font-size:26px;margin:0 0 6px}
+p{margin:.5em 0}.muted{color:#566559;font-size:15px}
+.regions{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0}
+.rc{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;font:inherit;background:#fff;border:2px solid var(--line);border-radius:10px;padding:16px;cursor:pointer;color:var(--ink)}
+.rc:hover{border-color:var(--g)}.rc[aria-pressed=true]{border-color:var(--g);background:var(--okbg);box-shadow:0 0 0 3px var(--y)}
+.rc b{font-family:var(--serif);font-size:19px;color:var(--gd)}.rc .tag{display:block;color:#566559;font-size:14.5px;margin:2px 0 8px}
+.rc ul{margin:0;padding-left:18px;font-size:15px}
+.rank{margin:14px 0}.row{display:flex;gap:10px;align-items:center;border:2px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;background:#fff}
+.row .n{font-family:var(--serif);font-size:24px;color:var(--g);width:28px}.row .t{flex:1}.row .t b{color:var(--gd)}.row .t span{display:block;font-size:14.5px;color:#566559}
+.row button{font:inherit;border:1px solid var(--line);background:#fff;border-radius:6px;width:36px;height:36px;cursor:pointer}
+.opp{background:var(--warnbg);border-left:6px solid var(--y);border-radius:8px;padding:14px 18px;margin:14px 0;color:#3f3300}
+.opp b{display:block;font-size:14px;margin-bottom:2px}
+label.q{display:block;font-weight:bold;color:var(--gd);margin:14px 0 4px}
+textarea{width:100%;min-height:130px;font:inherit;color:var(--gd);padding:10px 12px;border:2px solid var(--line);border-radius:8px;resize:vertical}
+textarea:focus,button:focus-visible{outline:3px solid var(--y);border-color:var(--g)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+button.b{font:inherit;font-weight:bold;border-radius:8px;padding:9px 20px;border:2px solid var(--g);background:var(--g);color:#fff;cursor:pointer}
+button.b.alt{background:#fff;color:var(--g)}button.b.ghost{background:none;border-color:var(--line);color:var(--ink);font-weight:normal}
+button.b:disabled{opacity:.45;cursor:not-allowed}
+.count{font-size:14px;color:#566559;margin-left:auto}
+.fb{margin-top:14px;padding:12px 16px;border-radius:8px;display:none}.fb.show{display:block}
+.fb.ok{background:var(--okbg);border-left:5px solid var(--g)}.fb.no{background:var(--badbg);border-left:5px solid var(--bad)}.fb.hint{background:var(--warnbg);border-left:5px solid var(--y)}
+.fb ul{list-style:none;padding:0;margin:6px 0 0}.fb li{padding:2px 0}.fb li.y::before{content:"\2713  ";color:var(--g);font-weight:bold}.fb li.n::before{content:"\25CB  ";color:var(--bad)}
+.ex{margin-top:10px;padding:12px 16px;background:#F6F9F3;border:1px dashed var(--g);border-radius:8px;font-size:16px}
+details{margin:10px 0}summary{cursor:pointer;color:var(--g);font-weight:bold}
+.recap{font-size:15.5px;background:#F6F9F3;border-radius:8px;padding:10px 14px;margin-top:8px}
+.final-box{width:100%;min-height:170px;background:#F6F9F3}
+.instr{margin:14px 0;padding:14px 18px;background:var(--okbg);border-left:6px solid var(--g);border-radius:8px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--gd);color:#fff;padding:10px 18px;border-radius:8px;display:none;z-index:9;max-width:90vw}
+.note{margin-top:12px;font-size:15px;color:#5C4A00;background:var(--warnbg);border-left:5px solid var(--y);border-radius:6px;padding:8px 12px}
+#restart{font:inherit;color:#fff;background:none;border:2px solid #fff;border-radius:8px;padding:6px 14px;cursor:pointer}#restart:hover{background:rgba(255,255,255,.15)}
+.foot{font-size:14px;color:#566559;margin-top:24px}
+</style>
+</head>
+<body>
+<header><h1>Energy Mix Debate<small>Choose a region, defend your priorities, then answer the big question</small></h1><button type="button" id="restart">Start over</button></header>
+<div id="stepper" aria-label="Progress"></div>
+<main id="main"></main>
+<div id="toast" role="status"></div>
+<script>
+(function(){'use strict';
+var CONFIG={BLOCK_PASTE:true};
+var KEY='energyMixDebate_v1';
+var FACTORS=[
+ {id:'avail',name:'Availability',desc:'Reliable power whenever people need it',kw:'availab|reliab|supply|outage|blackout|lights',
+  ch:'Keeping the lights on matters, but a region that puts availability first may pay more, and may rely on options with bigger side effects, just to guarantee supply. Why is that worth it for {R}?',
+  last:'outages and shortages',
+  ex:'I put availability first for {R} because outages are dangerous and hard on homes and businesses. I accept that this may cost more than the cheapest option, but I would limit the extra cost with efficiency and a mix of sources.'},
+ {id:'cost',name:'Cost',desc:'Affordable bills for households and businesses',kw:'cost|price|afford|bill|cheap|expens|money|econom',
+  ch:'Cheap power helps families today, but the cheapest option can fail during shortages or carry health and climate costs later. Who pays when it does, and why should {R} accept that risk?',
+  last:'high bills that hit lower-income households hardest',
+  ex:'I put cost first for {R} because high bills hit families first. I accept that the cheapest option may carry risks, so I would require backup supply and weigh health and climate costs before choosing it.'},
+ {id:'env',name:'Environmental impact',desc:'Air, water, land and climate',kw:'environment|climate|pollut|emission|air|water|land|clean|carbon|habitat',
+  ch:'Protecting the environment matters, but if bills spike or supply becomes unreliable, people may lose faith in the whole plan. How do you keep {R} on board?',
+  last:'pollution and long-term damage that is hard to undo',
+  ex:'I put environmental impact first for {R} because pollution and climate damage are hard to undo. I accept bills could rise, but I would phase changes in gradually and protect lower-income households so people stay supportive.'},
+ {id:'public',name:'Public support',desc:'Whether communities accept the plan',kw:'public|communit|support|accept|opinion|resident|voter|local|trust',
+  ch:'Public support is essential, but popular choices are not always reliable, affordable or clean, and opinion can change. What if the people of {R} want something that does not work?',
+  last:'projects that stall when communities push back',
+  ex:'I put public support first for {R} because projects people reject get stalled or blocked. I accept that popular choices are not always the best ones, so I would explain the trade-offs openly and use evidence when opinions and facts conflict.'}];
+var REGIONS=[
+ {id:'sun',name:'Sunbelt Coast',tag:'Sunny, growing, and storm-prone',facts:['Very sunny most of the year','Fast-growing population','Hurricane and flooding risk','Tourism-based economy'],kw:'sun|solar|hurricane|storm|flood|tourism|tourist|coast|growth|growing|population|heat'},
+ {id:'prairie',name:'Prairie Plains',tag:'Windy, open, and farm-based',facts:['Strong, steady wind','Large open areas, few people','Farming and ranching economy','Landowners decide where projects go'],kw:'wind|farm|ranch|land|landowner|rural|open|plains|prairie|agricultur'},
+ {id:'mount',name:'Mountain Valley',tag:'Rivers, forests, and small towns',facts:['Rivers that can power dams','Wildfire and drought concerns','Small, close-knit communities','Outdoor recreation economy'],kw:'river|hydro|dam|wildfire|drought|forest|mountain|valley|town|recreation|tourism|outdoor|fish'},
+ {id:'ind',name:'Industrial Corridor',tag:'Dense, busy, and power-hungry',facts:['Dense cities and factories','High demand for power all day','Older power plants nearby','Many jobs tied to energy and industry'],kw:'factory|factories|industr|city|cities|dense|demand|plant|jobs|worker|union|manufactur'},
+ {id:'island',name:'Island Community',tag:'Remote, storm-exposed, fuel-imported',facts:['Fuel arrives by ship','Higher prices than the mainland','Limited land for new projects','Storms can cut off supply'],kw:'island|ship|import|fuel|storm|limited|remote|expens|price|hurricane|isolat'}];
+var STEPS=['region','rank','c1','c2','final'],LABELS=['Region','Rank','Challenge 1','Challenge 2','Final answer'];
+var S=load();
+function fresh(){var o=[0,1,2,3];for(var i=3;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=o[i];o[i]=o[j];o[j]=t;}
+  if(o.join()==='0,1,2,3')o.push(o.shift());return{step:0,region:null,order:o,t:{rank:'',c1:'',c2:'',final:''},tries:{},guided:{}};}
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&typeof s.step==='number'&&s.order)return s;}catch(e){}return fresh();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function $(id){return document.getElementById(id);}
+function reg(){return REGIONS.filter(function(r){return r.id===S.region;})[0];}
+function fac(i){return FACTORS[S.order[i]];}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function words(t){return t.trim().split(/\s+/).filter(Boolean).length;}
+function toast(m){var t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display='none';},3000);}
+function stepper(){$('stepper').innerHTML=LABELS.map(function(l,i){return '<div class="'+(i<S.step?'done':i===S.step?'cur':'')+'">'+l+'</div>';}).join('');}
+
+function restart(){if(confirm('Start over? Your region, ranking and answers will be cleared and you will return to the beginning.')){S=fresh();save();render();}}
+$('restart').onclick=restart;
+/* ---- criteria ---- */
+var RE={reason:/\b(because|since|so that|which means|this means|therefore|as a result|in order to|that is why|this is why)\b/i,
+ trade:/\b(but|however|although|though|trade[- ]?off|give up|giving up|sacrific|downside|at the expense|accept|worse|less|risk|cost us|lose|loss)\b/i,
+ protect:/\b(still|at least|minimum|safeguard|protect|limit|mitigat|backup|compromise|partly|some|balance|not ignore|keep)\b/i,
+ position:/\b(should|must|ought|best|balance|prioriti[sz]e|weigh|first)\b/i};
+function mentionsRegion(t){var r=reg();return t.toLowerCase().indexOf(r.name.toLowerCase())>-1||t.toLowerCase().indexOf(r.name.split(' ')[0].toLowerCase())>-1||new RegExp(r.kw,'i').test(t);}
+function factorCount(t){var n=0;FACTORS.forEach(function(f){if(new RegExp(f.kw,'i').test(t))n++;});return n;}
+var CFG={
+ rank:{min:15,crit:function(t){return [
+  {ok:RE.reason.test(t),label:'You give a reason',tip:'Use a reason word such as “because” to say why your #1 comes first.'},
+  {ok:mentionsRegion(t),label:'You connect it to your region',tip:'Mention the region or one fact about it from your card.'}];}},
+ c1:{min:25,crit:function(t){return [
+  {ok:RE.trade.test(t),label:'You admit what you would give up',tip:'Name the downside of your choice, for example “but this could cost…” or “I accept that…”.'},
+  {ok:RE.reason.test(t),label:'You give a reason',tip:'Explain why it is still worth it, using “because” or “so that”.'},
+  {ok:mentionsRegion(t),label:'You use a fact about your region',tip:'Tie your answer to something specific about your region.'}];}},
+ c2:{min:25,crit:function(t){return [
+  {ok:RE.trade.test(t),label:'You say what ranking it last could cost',tip:'Admit the risk of putting this factor last.'},
+  {ok:RE.protect.test(t),label:'You say how you would still protect it a little',tip:'Name one safeguard, minimum or compromise, such as “I would still…” or “at least…”.'},
+  {ok:RE.reason.test(t),label:'You give a reason',tip:'Say why the other priorities matter more here, using “because”.'}];}},
+ final:{min:60,crit:function(t){var f=fac(0);return [
+  {ok:RE.position.test(t),label:'You take a clear position on how to balance',tip:'Say what a region “should” do to balance the four priorities.'},
+  {ok:factorCount(t)>=3,label:'You discuss at least three of the four priorities',tip:'Mention availability, cost, environmental impact and public support, at least three of them.'},
+  {ok:RE.trade.test(t),label:'You explain a trade-off',tip:'Say what a region gives up when it favors one priority over another.'},
+  {ok:RE.reason.test(t),label:'You give a reason for your balance',tip:'Use “because” to explain why your balance makes sense.'},
+  {ok:new RegExp(f.kw,'i').test(t),label:'You refer back to your #1 priority ('+f.name+')',tip:'Connect your answer to the priority you ranked first earlier.'}];}}};
+
+/* ---- render ---- */
+function render(){stepper();var k=STEPS[S.step];window.scrollTo(0,0);
+  if(k==='region')rRegion();else if(k==='rank')rRank();else if(k==='c1')rChallenge('c1');else if(k==='c2')rChallenge('c2');else rFinal();}
+function rRegion(){
+  $('main').innerHTML='<div class="card"><h2>Choose a region</h2><p>You will make the case for how this region should balance its energy priorities. These regions are made up for discussion, so there are no right answers to look up. Read the cards and choose the one you want to work with.</p><div class="note"><b>Heads up:</b> this activity only moves forward. Once you continue to the next step, you cannot go back and change earlier answers. If you want to redo your work, use <b>Start over</b> at the top of the page, which clears everything.</div>'+
+   '<div class="regions" role="group" aria-label="Regions">'+REGIONS.map(function(r){return '<button type="button" class="rc" data-id="'+r.id+'" aria-pressed="'+(S.region===r.id)+'"><b>'+r.name+'</b><span class="tag">'+r.tag+'</span><ul>'+r.facts.map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul></button>';}).join('')+'</div>'+
+   '<div class="btns"><button type="button" class="b" id="go"'+(S.region?'':' disabled')+'>Continue with this region</button></div></div>';
+  Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(b){b.onclick=function(){S.region=b.dataset.id;save();Array.prototype.forEach.call(document.querySelectorAll('.rc'),function(x){x.setAttribute('aria-pressed',x===b);});$('go').disabled=false;};});
+  $('go').onclick=function(){S.step=1;save();render();};
+}
+function rankHTML(){return S.order.map(function(fi,p){var f=FACTORS[fi];return '<div class="row"><span class="n">'+(p+1)+'</span><span class="t"><b>'+f.name+'</b><span>'+f.desc+'</span></span><button type="button" data-p="'+p+'" data-d="-1" aria-label="Move '+f.name+' up">\u2191</button><button type="button" data-p="'+p+'" data-d="1" aria-label="Move '+f.name+' down">\u2193</button></div>';}).join('');}
+function rank(){var o=S.order;document.querySelector('.rank').innerHTML=rankHTML();bindRank();}
+function bindRank(){Array.prototype.forEach.call(document.querySelectorAll('.rank button'),function(b){b.onclick=function(){var p=+b.dataset.p,q=p+(+b.dataset.d);if(q<0||q>3)return;var o=S.order,t=o[p];o[p]=o[q];o[q]=t;save();document.querySelector('.rank').innerHTML=rankHTML();bindRank();var nb=document.querySelector('.rank button[data-p="'+q+'"][data-d="'+b.dataset.d+'"]');if(nb)nb.focus();var l=$('lead');if(l)l.textContent=fac(0).name;};});}
+function textBlock(key,labelHTML,ph){return '<label class="q" for="ta">'+labelHTML+'</label><textarea id="ta" placeholder="'+ph+'" spellcheck="true" autocomplete="off">'+esc(S.t[key])+'</textarea><div class="btns"><button type="button" class="b" id="chk">Check my answer</button><span class="count" id="cnt"></span></div><div class="fb" id="fb" aria-live="polite"></div><div id="exz"></div><div class="btns" id="nx"></div>';}
+function rRank(){
+  $('main').innerHTML='<div class="card"><h2>Rank the four priorities</h2><p>For <b>'+esc(reg().name)+'</b> ('+reg().tag.toLowerCase()+'), put the four priorities in order from most important (1) to least important (4). Use the arrows.</p><div class="rank">'+rankHTML()+'</div>'+
+   textBlock('rank','Why is <span id="lead">'+esc(fac(0).name)+'</span> your #1 for '+esc(reg().name)+'?','Write 2 to 3 sentences.')+'<p class="note">You cannot go back after you continue, so check your work first. Use Start over (top of the page) if you want to begin again.</p>'+'</div>';
+  bindRank();wireText('rank');
+}
+function rChallenge(key){
+  var f=fac(key==='c1'?0:3),R=reg().name,msg,lab;
+  if(key==='c1'){msg=f.ch.replace(/\{R\}/g,R);lab='Respond to the challenge in 2 to 4 sentences.';}
+  else{msg='You ranked <b>'+f.name+'</b> last. A region that neglects it can face '+f.last+'. Why is it acceptable to put it last for '+esc(R)+', and how would you still protect it a little?';lab='Respond in 2 to 4 sentences.';}
+  $('main').innerHTML='<div class="card"><h2>'+(key==='c1'?'Challenge 1: defend your top priority':'Challenge 2: defend your last priority')+'</h2>'+
+   '<p class="muted">Your ranking: '+S.order.map(function(i,p){return (p+1)+'. '+FACTORS[i].name;}).join(' \u00b7 ')+'</p>'+
+   '<div class="opp"><b>Your opponent says:</b>'+(key==='c1'?esc(msg):msg)+'</div>'+textBlock(key,lab,'Write your response.')+'<p class="note">You cannot go back after you continue, so check your work first. Use Start over (top of the page) if you want to begin again.</p>'+'</div>';
+  wireText(key);
+}
+function rFinal(){
+  var r1=esc(S.t.rank),c1=esc(S.t.c1),c2=esc(S.t.c2);
+  $('main').innerHTML='<div class="card"><h2>Your final answer</h2><p>You have defended your priorities against two challenges. Now answer the big question, using what you learned.</p>'+
+   '<div class="opp" style="background:#E3F2E8;border-color:#046A38;color:#04472A"><b>Final question</b>How should a region balance availability, cost, environmental impact, and public support when choosing its energy mix?</div>'+
+   '<details><summary>Review your earlier answers</summary><div class="recap"><p><b>Region:</b> '+esc(reg().name)+'. <b>Ranking:</b> '+S.order.map(function(i,p){return (p+1)+'. '+FACTORS[i].name;}).join(', ')+'.</p><p><b>Why #1:</b> '+r1+'</p><p><b>Challenge 1:</b> '+c1+'</p><p><b>Challenge 2:</b> '+c2+'</p></div></details>'+
+   textBlock('final','Write your answer (at least 60 words).','Take a position, use your earlier reasoning, and explain a trade-off.')+
+   '<p class="muted">When your answer passes the checklist, you will copy it into the Canvas discussion board.</p><p class="note">This is the last step. You cannot go back to earlier steps, so use Start over (top of the page) if you want to redo your summary from the beginning.</p></div>';
+  wireText('final');
+}
+function wireText(key){
+  var ta=$('ta'),cnt=$('cnt'),cfg=CFG[key];
+  function upd(){var n=words(ta.value);cnt.textContent=n+' word'+(n===1?'':'s')+' (aim for '+cfg.min+'+)';}
+  upd();ta.addEventListener('input',function(){S.t[key]=ta.value;save();upd();});
+  if(CONFIG.BLOCK_PASTE){['paste','drop'].forEach(function(ev){ta.addEventListener(ev,function(e){e.preventDefault();toast('Pasting is turned off here. Type your answer in your own words.');});});
+    ta.addEventListener('beforeinput',function(e){if(/^insertFrom(Paste|Drop)$/.test(e.inputType||'')){e.preventDefault();toast('Pasting is turned off here. Type your answer in your own words.');}});}
+  $('chk').onclick=function(){
+    var t=ta.value.trim(),fb=$('fb');S.t[key]=ta.value;
+    if(words(t)<cfg.min){fb.className='fb show hint';fb.textContent='Write a little more. Aim for at least '+cfg.min+' words so your reasoning shows.';return;}
+    var res=cfg.crit(t),okAll=res.every(function(r){return r.ok;}),n=res.filter(function(r){return r.ok;}).length;
+    var list='<ul>'+res.map(function(r){return '<li class="'+(r.ok?'y':'n')+'">'+r.label+(r.ok?'':'<br><span class="muted">'+r.tip+'</span>')+'</li>';}).join('')+'</ul>';
+    if(okAll){fb.className='fb show ok';fb.innerHTML='<b>Nice. This covers everything.</b>'+list;done(key);return;}
+    S.tries[key]=(S.tries[key]||0)+1;save();
+    fb.className='fb show no';fb.innerHTML='<b>Close. Add what is missing, then check again.</b>'+list;
+    if(S.tries[key]>=2&&key!=='final'){showEx(key);}
+    if((S.tries[key]>=3&&n>=1)||S.tries[key]>=5){var nx=$('nx');if(!nx.querySelector('#guided')){var b=document.createElement('button');b.type='button';b.className='b ghost';b.id='guided';b.textContent='Continue with this answer';b.onclick=function(){S.guided[key]=1;done(key,true);};nx.appendChild(b);}}
+  };
+}
+function showEx(key){var f=fac(key==='c1'?0:3),z=$('exz');if(z.innerHTML)return;var txt;
+  if(key==='rank')txt='I ranked '+f.name+' first for '+reg().name+' because '+(f.id==='avail'?'outages would hit its homes and businesses hard.':f.id==='cost'?'high bills would hit its families first.':f.id==='env'?'pollution and climate damage are hard to undo.':'projects people reject can stall.');
+  else if(key==='c1')txt=f.ex.replace(/\{R\}/g,reg().name);
+  else txt='I put '+f.name+' last for '+reg().name+' not because it does not matter, but because the other priorities seem more urgent here. I would still protect it by setting a minimum standard, because ignoring it could lead to '+f.last+'.';
+  z.innerHTML='<div class="ex"><b>One strong example (write your own, in your own words):</b><br>'+esc(txt)+'</div>';}
+function done(key,guided){S.tries[key]=0;
+  var nx=$('nx');
+  if(key==='final'){S.t.final=$('ta').value.trim();S.step=5;save();completion();return;}
+  nx.innerHTML='<button type="button" class="b" id="next">Continue</button>';$('next').onclick=function(){S.step++;save();render();};$('next').focus();
+  $('ta').readOnly=true;$('chk').disabled=true;
+}
+function completion(){
+  stepper();var el=document.createElement('div');
+  $('main').innerHTML='<div class="card"><h2>Your final response is ready</h2><div class="instr"><b>Next step:</b> copy your final response below and paste it into the Canvas discussion board.</div>'+
+   '<label class="q" for="out">Your final response</label><textarea id="out" class="final-box" readonly></textarea>'+
+   '<div class="btns"><button type="button" class="b" id="copy">Copy my response</button><span id="copied" class="muted" role="status"></span></div>'+
+   '<p class="muted">Select the text yourself if the button does not work on your device.</p>'+
+   '<details><summary>Review your debate</summary><div class="recap"><p><b>Region:</b> '+esc(reg().name)+'. <b>Ranking:</b> '+S.order.map(function(i,p){return (p+1)+'. '+FACTORS[i].name;}).join(', ')+'.</p><p><b>Challenge 1:</b> '+esc(S.t.c1)+'</p><p><b>Challenge 2:</b> '+esc(S.t.c2)+'</p></div></details>'+
+   '<div class="btns"><button type="button" class="b ghost" id="again">Start over</button></div></div>';
+  $('out').value=S.t.final;
+  $('copy').onclick=function(){var v=$('out').value;
+    function fallback(){var o=$('out');o.focus();o.select();try{document.execCommand('copy');$('copied').textContent='Copied. Now paste it into Canvas.';}catch(e){$('copied').textContent='Press and hold, then choose Copy.';}}
+    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(v).then(function(){$('copied').textContent='Copied. Now paste it into Canvas.';},fallback);}else fallback();};
+  $('again').onclick=function(){if(confirm('Start over? Your answers on this page will be cleared.')){S=fresh();save();render();}};
+}
+if(S.step>=5&&S.t.final){completion();}else{if(S.step>=5)S.step=4;render();}
+})();
+</script>
+</body>
+</html>
